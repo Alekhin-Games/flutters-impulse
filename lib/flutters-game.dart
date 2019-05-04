@@ -167,7 +167,10 @@ class FluttersGame extends Game {
       restartGame();
     }
     if (gameOverDialog.creditsText.toRect().contains(d.globalPosition)) {
-      _launchURL();
+      _launchURL('https://github.com/impulse');
+    }
+    if (gameOverDialog.producerText.toRect().contains(d.globalPosition)) {
+      _launchURL('https://alekhin.games');
     }
   }
 
@@ -175,8 +178,7 @@ class FluttersGame extends Game {
     birdPlayer.endFlutter();
   }
 
-  _launchURL() async {
-    const url = 'https://github.com/impulse';
+  _launchURL(String url) async {
     await launch(url);
   }
 }
