@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -26,6 +27,7 @@ class FluttersGame extends Game {
   TextComponent scoreText;
   TextComponent floorText;
   Dialog gameOverDialog;
+  Random rnd;
 
   double tileSize;
   double birdPosY;
@@ -41,6 +43,7 @@ class FluttersGame extends Game {
   }
 
   void initialize() async {
+    rnd = Random();
     resize(await Flame.util.initialDimensions());
     skyBackground = Background(this, 0, 0, viewport.width, viewport.height);
     groundFloor = Floor(this, 0, viewport.height - floorHeight, viewport.width,
@@ -106,6 +109,7 @@ class FluttersGame extends Game {
       if (isObstacleInRange(obstacle)) {
         if (birdPlayer.toCollisionRect().overlaps(obstacle.toRect())) {
           obstacle.markHit();
+          Flame.audio.play('sfx/bump' + rnd.nextInt(3).toString() + '.ogg');
           gameOver();
         }
       }
