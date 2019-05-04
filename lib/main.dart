@@ -11,7 +11,7 @@ void main() async {
   await flameUtil.fullScreen();
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
 
-  Flame.images.loadAll(<String>[
+  await Flame.images.loadAll(<String>[
     'bird-0.png',
     'bird-1.png',
     'bird-0-left.png',
