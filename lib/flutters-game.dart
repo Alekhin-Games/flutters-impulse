@@ -109,7 +109,7 @@ class FluttersGame extends Game {
       if (isObstacleInRange(obstacle)) {
         if (birdPlayer.toCollisionRect().overlaps(obstacle.toRect())) {
           obstacle.markHit();
-          Flame.audio.play('sfx/bump' + rnd.nextInt(3).toString() + '.ogg');
+          Flame.audio.play('sfx/bump' + (rnd.nextInt(3) + 1).toString() + '.ogg');
           gameOver();
         }
       }
