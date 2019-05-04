@@ -11,6 +11,13 @@ void main() async {
   await flameUtil.fullScreen();
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
 
+  await Flame.audio.loadAll(<String>[
+    'bgm/fluttery-meadow.ogg',
+    'sfx/bump1.ogg',
+    'sfx/bump2.ogg',
+    'sfx/bump3.ogg',
+  ]);
+
   await Flame.images.loadAll(<String>[
     'bird-0.png',
     'bird-1.png',
@@ -20,6 +27,8 @@ void main() async {
     'cloud-2.png',
     'cloud-3.png',
   ]);
+
+  Flame.audio.loop('bgm/fluttery-meadow.ogg');
 
   FluttersGame game = FluttersGame();
   TapGestureRecognizer tapSink = TapGestureRecognizer();
