@@ -1,4 +1,4 @@
-package com.example.flutters;
+package games.alekhin.flutters;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
