@@ -28,8 +28,6 @@ void main() async {
     'cloud-3.png',
   ]);
 
-  Flame.audio.loopLongAudio('bgm/fluttery-meadow.ogg');
-
   FluttersGame game = FluttersGame();
   TapGestureRecognizer tapSink = TapGestureRecognizer();
   tapSink.onTapDown = game.onTapDown;

@@ -44,6 +44,7 @@ class FluttersGame extends Game {
 
   void initialize() async {
     rnd = Random();
+    Flame.audio.loop('bgm/fluttery-meadow.ogg', volume: .5);
     resize(await Flame.util.initialDimensions());
     skyBackground = Background(this, 0, 0, viewport.width, viewport.height);
     groundFloor = Floor(this, 0, viewport.height - floorHeight, viewport.width,
