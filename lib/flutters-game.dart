@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutters/components/background.dart';
 import 'package:flutters/components/bird.dart';
 import 'package:flutters/components/dialog.dart';
@@ -10,6 +11,7 @@ import 'package:flutters/components/floor.dart';
 import 'package:flutters/components/level.dart';
 import 'package:flutters/components/obstacle.dart';
 import 'package:flutters/components/text.dart';
+import 'package:soundpool/soundpool.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum GameState {
@@ -28,6 +30,8 @@ class FluttersGame extends Game {
   TextComponent floorText;
   Dialog gameOverDialog;
   Random rnd;
+  Soundpool pool;
+  List<int> sfxBump;
 
   double tileSize;
   double birdPosY;
@@ -45,15 +49,18 @@ class FluttersGame extends Game {
   void initialize() async {
     rnd = Random();
     Flame.audio.loop('bgm/fluttery-meadow.ogg', volume: .5);
+    pool = Soundpool(streamType: StreamType.notification);
+    sfxBump = List<int>();
+    for (int bumpIndex = 1; bumpIndex <= 3; bumpIndex++) {
+      sfxBump.add(await rootBundle.load('assets/audio/sfx/bump$bumpIndex.ogg').then((ByteData soundData) => pool.load(soundData)));
+    }
     resize(await Flame.util.initialDimensions());
     skyBackground = Background(this, 0, 0, viewport.width, viewport.height);
-    groundFloor = Floor(this, 0, viewport.height - floorHeight, viewport.width,
-        floorHeight, 0xff48BB78);
+    groundFloor = Floor(this, 0, viewport.height - floorHeight, viewport.width, floorHeight, 0xff48BB78);
     currentLevel = Level(this);
     birdPlayer = Bird(this, 0, birdPosY, tileSize, tileSize);
     scoreText = TextComponent(this, '0', 30.0, 60);
-    floorText = TextComponent(
-        this, 'Tap to flutter!', 40.0, viewport.height - floorHeight / 2);
+    floorText = TextComponent(this, 'Tap to flutter!', 40.0, viewport.height - floorHeight / 2);
     gameOverDialog = Dialog(this);
   }
 
@@ -110,7 +117,8 @@ class FluttersGame extends Game {
       if (isObstacleInRange(obstacle)) {
         if (birdPlayer.toCollisionRect().overlaps(obstacle.toRect())) {
           obstacle.markHit();
-          Flame.audio.play('sfx/bump' + (rnd.nextInt(3) + 1).toString() + '.ogg');
+          pool.play(sfxBump[rnd.nextInt(3)]);
+          // Flame.audio.play('sfx/bump' + (rnd.nextInt(3) + 1).toString() + '.ogg');
           gameOver();
         }
       }
@@ -129,8 +137,7 @@ class FluttersGame extends Game {
   }
 
   bool isObstacleInRange(Obstacle obs) {
-    if (-obs.y < viewport.height + currentHeight &&
-        -obs.y > currentHeight - viewport.height) {
+    if (-obs.y < viewport.height + currentHeight && -obs.y > currentHeight - viewport.height) {
       return true;
     } else {
       return false;
