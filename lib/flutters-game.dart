@@ -1,15 +1,18 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutters/components/background.dart';
+import 'package:flutters/components/bgm-button.dart';
 import 'package:flutters/components/bird.dart';
 import 'package:flutters/components/dialog.dart';
 import 'package:flutters/components/floor.dart';
 import 'package:flutters/components/level.dart';
 import 'package:flutters/components/obstacle.dart';
+import 'package:flutters/components/sfx-button.dart';
 import 'package:flutters/components/text.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -29,9 +32,12 @@ class FluttersGame extends Game {
   TextComponent scoreText;
   TextComponent floorText;
   Dialog gameOverDialog;
+  BGMButton bgmButton;
+  SFXButton sfxButton;
   Random rnd;
   Soundpool pool;
   List<int> sfxBump;
+  AudioPlayer bgm;
 
   double tileSize;
   double birdPosY;
@@ -48,7 +54,7 @@ class FluttersGame extends Game {
 
   void initialize() async {
     rnd = Random();
-    Flame.audio.loop('bgm/fluttery-meadow.ogg', volume: .5);
+    bgm = await Flame.audio.loop('bgm/fluttery-meadow.ogg', volume: .5);
     pool = Soundpool(streamType: StreamType.notification);
     sfxBump = List<int>();
     for (int bumpIndex = 1; bumpIndex <= 3; bumpIndex++) {
@@ -62,6 +68,8 @@ class FluttersGame extends Game {
     scoreText = TextComponent(this, '0', 30.0, 60);
     floorText = TextComponent(this, 'Tap to flutter!', 40.0, viewport.height - floorHeight / 2);
     gameOverDialog = Dialog(this);
+    bgmButton = BGMButton(this);
+    sfxButton = SFXButton(this);
   }
 
   void resize(Size size) {
@@ -72,6 +80,7 @@ class FluttersGame extends Game {
 
   void render(Canvas c) {
     skyBackground.render(c);
+
     c.save();
     c.translate(0, currentHeight);
     currentLevel.levelObstacles.forEach((obstacle) {
@@ -84,6 +93,9 @@ class FluttersGame extends Game {
     c.restore();
 
     birdPlayer.render(c);
+
+    bgmButton.render(c);
+    sfxButton.render(c);
 
     if (currentGameState == GameState.gameOver) {
       gameOverDialog.render(c);
@@ -117,7 +129,7 @@ class FluttersGame extends Game {
       if (isObstacleInRange(obstacle)) {
         if (birdPlayer.toCollisionRect().overlaps(obstacle.toRect())) {
           obstacle.markHit();
-          pool.play(sfxBump[rnd.nextInt(3)]);
+          if (sfxButton.isOn) pool.play(sfxBump[rnd.nextInt(3)]);
           // Flame.audio.play('sfx/bump' + (rnd.nextInt(3) + 1).toString() + '.ogg');
           gameOver();
         }
@@ -168,6 +180,15 @@ class FluttersGame extends Game {
   }
 
   void onTapDown(TapDownDetails d) {
+    if (bgmButton.rect.contains(d.globalPosition)) {
+      bgmButton.isOn = !bgmButton.isOn;
+      bgm.setVolume(bgmButton.isOn ? .5 : 0);
+      return;
+    }
+    if (sfxButton.rect.contains(d.globalPosition)) {
+      sfxButton.isOn = !sfxButton.isOn;
+      return;
+    }
     if (currentGameState != GameState.gameOver) {
       // Make the bird flutter
       birdPlayer.startFlutter();
