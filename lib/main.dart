@@ -19,6 +19,8 @@ void main() async {
   ]);
 
   await Flame.images.loadAll(<String>[
+    'bgm-off.png',
+    'bgm-on.png',
     'bird-0.png',
     'bird-1.png',
     'bird-0-left.png',
@@ -26,6 +28,8 @@ void main() async {
     'cloud-1.png',
     'cloud-2.png',
     'cloud-3.png',
+    'sfx-off.png',
+    'sfx-on.png',
   ]);
 
   FluttersGame game = FluttersGame();

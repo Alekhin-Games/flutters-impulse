@@ -29,6 +29,8 @@ flutter:
     - assets/audio/sfx/bump1.ogg
     - assets/audio/sfx/bump2.ogg
     - assets/audio/sfx/bump3.ogg
+    - assets/images/bgm-off.png
+    - assets/images/bgm-on.png
     - assets/images/bird-0.png
     - assets/images/bird-1.png
     - assets/images/bird-0-left.png
@@ -36,5 +38,7 @@ flutter:
     - assets/images/cloud-1.png
     - assets/images/cloud-2.png
     - assets/images/cloud-3.png
+    - assets/images/sfx-off.png
+    - assets/images/sfx-on.png
 
   uses-material-design: true
