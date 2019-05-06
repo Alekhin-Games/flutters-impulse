@@ -79,6 +79,7 @@ class FluttersGame extends Game {
   }
 
   void render(Canvas c) {
+    if (currentLevel == null) return;
     skyBackground.render(c);
 
     c.save();
@@ -105,6 +106,7 @@ class FluttersGame extends Game {
   }
 
   void update(double t) {
+    if (currentLevel == null) return;
     if (currentGameState == GameState.playing) {
       currentLevel.levelObstacles.forEach((obstacle) {
         if (isObstacleInRange(obstacle)) {
